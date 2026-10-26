@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: driveedge_db
+    environment:
+      POSTGRES_USER: driveedge
+      POSTGRES_PASSWORD: driveedge
+      POSTGRES_DB: driveedge
+    ports:
+      - "5432:5432"
+    volumes:
+      - driveedge_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U driveedge -d driveedge"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: driveedge_mailpit
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+    restart: unless-stopped
+
+volumes:
+  driveedge_pgdata:

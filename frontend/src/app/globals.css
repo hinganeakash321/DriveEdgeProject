@@ -1,0 +1,201 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --c-navy: 16 24 40;
+  --c-ink: 15 23 42;
+  --c-muted: 100 116 139;
+  --c-line: 226 232 240;
+  --c-page: 248 250 252;
+  --c-card: 255 255 255;
+  --c-soft: 241 245 249;
+  --c-brand-50: 239 246 255;
+  --c-teal-50: 240 253 250;
+}
+
+.dark {
+  color-scheme: dark;
+  --c-navy: 241 245 249;   /* headings flip to light */
+  --c-ink: 226 232 240;    /* primary text */
+  --c-muted: 148 163 184;  /* secondary text */
+  --c-line: 37 48 73;      /* borders */
+  --c-page: 11 18 32;      /* page background */
+  --c-card: 20 27 45;      /* card background */
+  --c-soft: 28 39 64;      /* muted surface */
+  --c-brand-50: 26 36 66;  /* subtle brand tint on dark */
+  --c-teal-50: 15 44 44;
+}
+
+body {
+  background-color: rgb(var(--c-page));
+  color: rgb(var(--c-ink));
+}
+
+/* Success green is a little dim on the dark page; lift it for legibility. */
+.dark .badge-success { color: #4ade80; background-color: rgb(74 222 128 / 0.12); }
+.dark .text-success { color: #4ade80; }
+
+/* Theme Leaflet popups so themed text stays readable in dark mode
+   (Leaflet defaults to a hard-coded white popup background). */
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: rgb(var(--c-card));
+  color: rgb(var(--c-ink));
+}
+
+@layer components {
+  .container-xl {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  .card {
+    @apply rounded-xl border border-line bg-card shadow-card;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-brand/40 disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-brand text-white hover:bg-brand-700;
+  }
+  .btn-outline {
+    @apply btn border border-line bg-card text-ink hover:bg-soft;
+  }
+  .btn-ghost {
+    @apply btn text-ink hover:bg-soft;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-line bg-card px-3 py-1 text-xs font-medium text-muted;
+  }
+  .input {
+    /* 16px on mobile prevents iOS Safari from auto-zooming on focus; 14px from sm+. */
+    @apply w-full rounded-lg border border-line bg-card px-3 py-2 text-base text-ink placeholder:text-muted focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 sm:text-sm;
+  }
+  .label {
+    @apply mb-1 block text-sm font-medium text-ink;
+  }
+  .badge-success { @apply inline-flex items-center rounded-full bg-success/10 px-2.5 py-0.5 text-xs font-semibold text-success; }
+  .badge-warning { @apply inline-flex items-center rounded-full bg-warning/10 px-2.5 py-0.5 text-xs font-semibold text-warning; }
+  .badge-muted { @apply inline-flex items-center rounded-full bg-soft px-2.5 py-0.5 text-xs font-semibold text-muted; }
+
+  /* Richer surfaces & effects for a more premium feel */
+  .card-hover {
+    @apply transition-all duration-300 hover:-translate-y-0.5 hover:shadow-pop hover:border-brand/30;
+  }
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand via-brand-700 to-teal bg-clip-text text-transparent;
+  }
+  .glass {
+    @apply border border-white/10 bg-card/70 backdrop-blur-xl;
+  }
+  .surface-gradient {
+    background-image: radial-gradient(1200px 500px at 100% -10%, rgb(var(--c-brand-50)) 0%, transparent 60%),
+      radial-gradient(900px 400px at -10% 0%, rgb(var(--c-teal-50)) 0%, transparent 55%);
+  }
+  .btn-gradient {
+    @apply btn text-white shadow-glow;
+    background-image: linear-gradient(135deg, #2563eb 0%, #1d4ed8 55%, #0ea5a4 130%);
+  }
+  .btn-gradient:hover { filter: brightness(1.05); }
+  /* Cinematic dark hero (marketing surfaces) */
+  .hero-dark {
+    @apply relative overflow-hidden text-white;
+    background-color: #0a0f1d;
+    background-image:
+      radial-gradient(900px 420px at 82% -8%, rgba(20, 184, 166, 0.28), transparent 60%),
+      radial-gradient(820px 400px at 4% 8%, rgba(37, 99, 235, 0.32), transparent 60%),
+      linear-gradient(180deg, #0a0f1d 0%, #0c1324 100%);
+  }
+  .hero-grid::before {
+    content: "";
+    @apply pointer-events-none absolute inset-0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(70% 60% at 50% 30%, black, transparent 90%);
+  }
+  .glow-blob {
+    @apply pointer-events-none absolute rounded-full blur-3xl;
+  }
+  .card-glass-dark {
+    @apply rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl;
+  }
+  .shimmer {
+    @apply relative overflow-hidden bg-soft;
+  }
+  .shimmer::after {
+    content: "";
+    @apply absolute inset-0;
+    background-image: linear-gradient(90deg, transparent, rgb(var(--c-card) / 0.65), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 1.6s infinite;
+  }
+
+  /* Gradient border wrapper (padding-box trick, theme-aware) */
+  .gradient-border {
+    position: relative;
+    background:
+      linear-gradient(rgb(var(--c-card)), rgb(var(--c-card))) padding-box,
+      linear-gradient(135deg, #2563eb, #14b8a6) border-box;
+    border: 1px solid transparent;
+  }
+  /* Aurora / mesh gradient backdrop for sections (subtle, theme-aware) */
+  .aurora {
+    position: relative;
+    background-image:
+      radial-gradient(60% 60% at 15% 10%, rgb(var(--c-brand-50)) 0%, transparent 60%),
+      radial-gradient(50% 50% at 90% 0%, rgb(var(--c-teal-50)) 0%, transparent 55%),
+      radial-gradient(60% 60% at 80% 100%, rgb(var(--c-brand-50)) 0%, transparent 60%);
+  }
+  /* Bento grid helper */
+  .bento {
+    @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-3;
+  }
+  /* Consistent keyboard focus ring */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--c-page))];
+  }
+  /* Floating action buttons: clear the iOS home indicator (safe area). The AI
+     launcher sits at the bottom; BackToTop stacks just above it. */
+  .fab-launcher {
+    right: calc(1.25rem + env(safe-area-inset-right));
+    bottom: calc(1.25rem + env(safe-area-inset-bottom));
+  }
+  .fab-backtotop {
+    right: calc(1.25rem + env(safe-area-inset-right));
+    bottom: calc(6rem + env(safe-area-inset-bottom));
+  }
+  /* Subtle noise texture overlay */
+  .noise::after {
+    content: "";
+    @apply pointer-events-none absolute inset-0 opacity-[0.025];
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* Themed, slim scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--c-line)) transparent;
+}
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--c-line));
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+html { scroll-behavior: smooth; }
+
+/* Respect reduced motion: kill CSS animation + smooth scroll. Framer Motion is
+   gated separately via useReducedMotion() in the JS primitives. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
